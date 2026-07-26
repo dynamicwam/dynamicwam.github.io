@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>DynamicWAM — Exact-Time Motion Conditioning for Dynamic Manipulation</title>
+  <title>DynamicWAM — Dual-Path Motion Conditioning for Dynamic Manipulation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="DynamicWAM couples rendered history-flow images with exact-time numeric motion tokens through layer-wise video–action joint attention. 38.2% SR on DOMINO Level 1.">
+  <meta name="description" content="DynamicWAM: dual-path motion conditioning for dynamic manipulation. 38.2% success on DOMINO Level 1 and 46.7% across 12 real-robot tasks.">
   <meta property="og:title" content="DynamicWAM">
   <meta property="og:description" content="Dynamic manipulation needs to see motion — and to measure it.">
+  <meta property="og:image" content="https://dynamicwam.github.io/static/images/logo.png">
   <link rel="icon" type="image/svg+xml" href="static/images/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,17 +31,18 @@
 
 <!-- ================= HERO ================= -->
 <header class="hero" id="top">
+  <img class="hero-logo" src="static/images/logo.png" alt="DynamicWAM logo" width="84" height="84">
   <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Preprint · 2026</p>
   <h1 class="hero-title">DynamicWAM</h1>
   <p class="hero-thesis">Dynamic manipulation needs to <em>see</em> motion —<br class="desktop-br"> and to <em>measure</em> it.</p>
   <p class="hero-sub">
-    A world-action model conditioned through two complementary paths: rendered history-flow
-    images expose <span class="k-slow">where motion happens</span>, and exact-time numeric motion
+    A compact world–action model with dual-path motion conditioning: rendered history-flow
+    images expose <span class="k-slow">where motion happens</span>, and numerical motion
     tokens restore <span class="k-fast">how large and how fast</span> — the magnitude and timing
     that flow rendering removes.
   </p>
 
-  <p class="authors">Author list to be finalized&ensp;·&ensp;2026</p>
+  <p class="authors">Anonymous authors&ensp;·&ensp;under review&ensp;·&ensp;2026</p>
 
   <div class="hero-actions">
     <a class="btn btn-disabled" aria-disabled="true" href="#" onclick="return false"><span class="btn-icon">¶</span>Paper<span class="btn-soon">soon</span></a>
@@ -52,15 +54,15 @@
   <div class="hero-stats" role="group" aria-label="headline result">
     <div class="hero-stat">
       <span class="hero-stat-num">38.2<span class="unit">%</span></span>
-      <span class="hero-stat-label">success rate · DOMINO Level&nbsp;1</span>
+      <span class="hero-stat-label">success rate · DOMINO Level&nbsp;1 · above every evaluated baseline</span>
     </div>
     <div class="hero-stat">
-      <span class="hero-stat-num">53.2</span>
-      <span class="hero-stat-label">manipulation score</span>
+      <span class="hero-stat-num">46.7<span class="unit">%</span></span>
+      <span class="hero-stat-label">average success · 12 real-robot tasks</span>
     </div>
     <div class="hero-stat">
-      <span class="hero-stat-num">+15.5<span class="unit">pts</span></span>
-      <span class="hero-stat-label">over the motion-free reference</span>
+      <span class="hero-stat-num">+22.9<span class="unit">pts</span></span>
+      <span class="hero-stat-label">over the strongest real-world baseline</span>
     </div>
   </div>
 </header>
@@ -91,16 +93,16 @@
   <figcaption class="alias-verdicts">
     <div class="verdict verdict-bad">
       <span class="verdict-name">current frame only</span>
-      <span class="verdict-cond">C<sub>eff</sub> = (O<sub>t</sub>, ℓ, s<sub>t</sub>)</span>
+      <span class="verdict-cond">C<sub>base</sub> = (O<sub>t</sub>, ℓ, s<sub>t</sub>)</span>
       <span class="verdict-word">aliased — A and B are indistinguishable</span>
     </div>
     <div class="verdict verdict-mid">
       <span class="verdict-name">+ history flow</span>
-      <span class="verdict-cond">C<sub>flow</sub> = C<sub>eff</sub> ∪ (R<sub>1</sub>…R<sub>4</sub>)</span>
+      <span class="verdict-cond">C<sub>flow</sub> = C<sub>base</sub> ∪ (R<sub>1</sub>…R<sub>4</sub>)</span>
       <span class="verdict-word">motion visible — but per-map P99 normalization drops its scale</span>
     </div>
     <div class="verdict verdict-good">
-      <span class="verdict-name">+ exact-time tokens</span>
+      <span class="verdict-name">+ numerical motion tokens</span>
       <span class="verdict-cond">C<sub>full</sub> = C<sub>flow</sub> ∪ (m<sub>1</sub>…m<sub>4</sub>)</span>
       <span class="verdict-word">calibrated — displacement, Δt, velocity, acceleration recovered</span>
     </div>
@@ -111,26 +113,25 @@
 <section class="prose" id="abstract">
   <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Abstract</p>
   <p class="abstract-text">
-    Dynamic manipulation places two distinct information requirements on a visuomotor policy.
-    Motion must be <em>observable</em>: the policy has to see how the scene is changing, not only
-    its current appearance. And motion must be <em>calibrated</em>: displacement scale and elapsed
-    time have to survive all the way to the policy, so that slow and fast versions of the same
-    scene do not collapse into one condition. A policy conditioned only on the current observation
-    is dynamically aliased — two trajectories can reach the same image and robot state while the
-    target moves at different velocities. Rendered optical flow makes motion visible, but
-    per-map normalization makes the rendering scale-invariant: it preserves direction and spatial
-    structure while discarding globally comparable speed.
+    Dynamic manipulation requires robots to infer target motion and respond promptly, yet existing
+    World–Action Models (WAMs) typically condition only on the current frame and execute large
+    backbones synchronously, limiting motion awareness and responsive control in dynamic scenes.
+    We propose DynamicWAM, a compact WAM for dynamic object manipulation with dual-path motion
+    conditioning. DynamicWAM introduces history-flow conditioning, encoding temporally aligned
+    optical-flow maps alongside the current observation through an unchanged pretrained video VAE
+    to preserve spatial motion structure, while injecting numerical descriptors of displacement,
+    duration, velocity, and acceleration into the action expert to provide metric scale and
+    temporal dynamics.
   </p>
   <p class="abstract-text">
-    DynamicWAM conditions a compact video–action model through two complementary paths. Four
-    rendered head-camera flow maps expose where motion occurs and its spatial structure; four
-    exact-time 12-dimensional motion descriptors — displacement, interval duration, velocity,
-    acceleration — are mapped to action-side motion tokens that restore what the rendering removed.
-    The two paths meet through layer-wise joint attention between a compact video expert and an
-    action expert. Under the DOMINO Level-1 native synchronous protocol (35 tasks × 100 episodes,
-    execute-16), the motion-free Efficient-WAM reference obtains 22.7% success, History-Flow WAM
-    27.2%, and the complete DynamicWAM pipeline reaches <strong>38.2% success</strong> with a
-    manipulation score of <strong>53.2</strong>.
+    The two complementary paths are fused through joint world–action attention. A distilled
+    compact backbone and real-time chunking (RTC)-based asynchronous execution further enable
+    responsive control. On DOMINO, DynamicWAM achieves a <strong>38.2% success rate</strong> and a
+    <strong>53.2 manipulation score</strong>, outperforming all evaluated baselines. Across 12
+    real-world tasks spanning linear, circular, and complex target motion, it achieves a
+    <strong>46.7% average success rate</strong>, exceeding the strongest baseline by 22.9
+    percentage points. These results demonstrate that dual-path motion conditioning effectively
+    enables motion-aware control of moving targets.
   </p>
 </section>
 
@@ -139,7 +140,7 @@
   <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>The problem</p>
   <h2>The current frame is not enough — and normalized flow is not calibrated</h2>
   <p>
-    A motion-free world-action model conditions on the current composite observation, the language
+    A current-frame world–action model conditions on the current composite observation, the language
     instruction, and the robot state. In a dynamic scene this condition is ambiguous by
     construction: the same image and the same joint readings are compatible with a target that is
     creeping and a target that is sprinting. Whatever the policy does next, it is guessing the one
@@ -162,11 +163,11 @@
 
   <div class="cond-ladder" aria-label="conditioning ladder">
     <div class="cond-row">
-      <code>C<sub>eff</sub>&nbsp; = (O<sub>t</sub>, ℓ, s<sub>t</sub>)</code>
+      <code>C<sub>base</sub> = (O<sub>t</sub>, ℓ, s<sub>t</sub>)</code>
       <span class="cond-note cond-note-bad">dynamically aliased</span>
     </div>
     <div class="cond-row">
-      <code>C<sub>flow</sub> = C<sub>eff</sub> + (R<sub>1</sub>…R<sub>4</sub>)</code>
+      <code>C<sub>flow</sub> = C<sub>base</sub> + (R<sub>1</sub>…R<sub>4</sub>)</code>
       <span class="cond-note cond-note-mid">observable, uncalibrated</span>
     </div>
     <div class="cond-row">
@@ -206,7 +207,7 @@
           <div class="arch-node">frozen Wan2.2 VAE</div>
         </div>
         <div class="arch-path arch-path-time">
-          <span class="arch-path-label">exact-time numeric path</span>
+          <span class="arch-path-label">numerical motion path</span>
           <div class="arch-node">12-D descriptor / interval<span class="arch-fine">d, Δt, v, a — exact sim time</span></div>
           <div class="arch-node">standardize → 2-layer MLP<span class="arch-fine">+ validity embeddings</span></div>
           <div class="arch-node">4 × 768 motion tokens</div>
@@ -217,7 +218,7 @@
     <div class="arch-experts">
       <div class="arch-expert arch-expert-video">
         <span class="arch-expert-name">compact video expert</span>
-        <span class="arch-fine">12 blocks · width 2048 · 8 future frames @ 192×160</span>
+        <span class="arch-fine">distilled from Wan2.2-TI2V-5B · 12 blocks · width 2048 · 8 future frames @ 192×160</span>
       </div>
       <div class="arch-join">
         <span class="arch-join-line" aria-hidden="true"></span>
@@ -239,8 +240,8 @@
   <div class="prose">
     <h3>The 12 numbers the rendering can't keep</h3>
     <p>
-      Each of the four intervals contributes one exact-time descriptor, standardized with
-      dataset-global statistics. Spatial quantities live on the 64×64 flow grid; time is exact
+      Each of the four intervals contributes one 12-D numerical descriptor, standardized with
+      dataset-level statistics. Spatial quantities live on the 64×64 flow grid; time is exact
       simulator seconds. Invalid intervals get learned validity embeddings — missing evidence is
       never silently treated as zero motion.
     </p>
@@ -276,70 +277,176 @@
 <!-- ================= RESULTS ================= -->
 <section class="section-wide" id="results">
   <div class="prose">
-    <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Results</p>
-    <h2>A three-rung system ladder on DOMINO Level 1</h2>
+    <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Results · simulation</p>
+    <h2>Above every evaluated baseline on DOMINO Level 1</h2>
     <p>
-      All rows are complete 35-task evaluations under one archived benchmark contract:
-      100 accepted episodes per task, unseen instructions, native synchronous execution,
-      <code class="inline-code">start_seed 100000</code>.
+      All DynamicWAM variants are complete 35-task evaluations under DOMINO's native synchronous
+      protocol: 100 accepted episodes per task, unseen instructions, 16 actions executed per
+      inference at a nominal 100&nbsp;ms interval.
+    </p>
+  </div>
+
+  <div class="table-scroll">
+    <table class="results-table">
+      <thead>
+        <tr><th>Method</th><th>SR (%) ↑</th><th>MS ↑</th></tr>
+      </thead>
+      <tbody>
+        <tr class="group-row"><td colspan="3">Fine-tuned baselines</td></tr>
+        <tr><td>OpenVLA</td><td>1.5</td><td>6.1</td></tr>
+        <tr><td>π<sub>0</sub>-FAST</td><td>3.5</td><td>20.9</td></tr>
+        <tr><td>VLA-Adapter</td><td>4.4</td><td>24.3</td></tr>
+        <tr><td>RDT-1B</td><td>5.3</td><td>17.7</td></tr>
+        <tr><td>InternVLA-M1</td><td>5.4</td><td>27.6</td></tr>
+        <tr><td>Isaac-GR00T</td><td>6.1</td><td>28.6</td></tr>
+        <tr><td>π<sub>0</sub></td><td>8.2</td><td>24.0</td></tr>
+        <tr><td>OpenVLA-OFT</td><td>9.1</td><td>24.1</td></tr>
+        <tr><td>π<sub>0.5</sub></td><td>9.6</td><td>26.2</td></tr>
+        <tr><td>PUMA</td><td>17.2</td><td>35.0</td></tr>
+        <tr><td>InternVLA-A1.5</td><td><span class="second-best">29.3</span></td><td><span class="second-best">42.5</span></td></tr>
+        <tr class="group-row"><td colspan="3">DynamicWAM variants</td></tr>
+        <tr><td>DynamicWAM (w/o flow and motion)</td><td>22.7</td><td>38.3</td></tr>
+        <tr><td>DynamicWAM (w/o motion)</td><td>27.2</td><td>41.6</td></tr>
+        <tr class="ours-row"><td>DynamicWAM (ours)</td><td>38.2</td><td>53.2</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-note">
+    Baseline values from the DOMINO paper and the corresponding method papers. The current-frame
+    variant is initialized from the official Efficient-WAM weights and adapted with the same
+    final-stage recipe as the other variants. Second-best results are underlined.
+  </p>
+
+  <div class="prose">
+    <h3>Two paths, two gains</h3>
+    <p>
+      History flow answers <em>where</em> motion is (Q1); numerical motion tokens answer
+      <em>how much and how fast</em> (Q2). Each path adds its own step:
     </p>
   </div>
 
   <div class="ladder">
     <div class="ladder-row">
       <div class="ladder-name">
-        <span class="ladder-rung">motion-free</span>
-        <b>Efficient-WAM reference</b>
-        <span class="ladder-cond">C<sub>eff</sub> — current observation only</span>
+        <span class="ladder-rung">w/o flow and motion</span>
+        <b>Current-frame WAM</b>
+        <span class="ladder-cond">C<sub>base</sub> — current observation only</span>
       </div>
-      <div class="ladder-sr"><b>22.71<span class="unit">%</span></b><span>SR</span></div>
-      <div class="ladder-ms"><b>38.32</b><span>MS</span></div>
+      <div class="ladder-sr"><b>22.7<span class="unit">%</span></b><span>SR</span></div>
+      <div class="ladder-ms"><b>38.3</b><span>MS</span></div>
       <div class="ladder-n"><b>795</b><span>/ 3500</span></div>
       <div class="ladder-delta"></div>
     </div>
     <div class="ladder-row">
       <div class="ladder-name">
-        <span class="ladder-rung">+ flow images</span>
-        <b>History-Flow WAM</b>
+        <span class="ladder-rung">w/o motion</span>
+        <b>+ History flow</b>
         <span class="ladder-cond">C<sub>flow</sub> — motion visible, scale-free</span>
       </div>
-      <div class="ladder-sr"><b>27.23<span class="unit">%</span></b><span>SR</span></div>
-      <div class="ladder-ms"><b>41.62</b><span>MS</span></div>
+      <div class="ladder-sr"><b>27.2<span class="unit">%</span></b><span>SR</span></div>
+      <div class="ladder-ms"><b>41.6</b><span>MS</span></div>
       <div class="ladder-n"><b>953</b><span>/ 3500</span></div>
-      <div class="ladder-delta"><span>+4.51 SR</span></div>
+      <div class="ladder-delta"><span>+4.5 SR</span></div>
     </div>
     <div class="ladder-row ladder-row-final">
       <div class="ladder-name">
-        <span class="ladder-rung">+ exact-time tokens</span>
-        <b>DynamicWAM</b>
+        <span class="ladder-rung">ours</span>
+        <b>+ Numerical motion tokens</b>
         <span class="ladder-cond">C<sub>full</sub> — observable + calibrated</span>
       </div>
-      <div class="ladder-sr"><b>38.20<span class="unit">%</span></b><span>SR</span></div>
-      <div class="ladder-ms"><b>53.16</b><span>MS</span></div>
+      <div class="ladder-sr"><b>38.2<span class="unit">%</span></b><span>SR</span></div>
+      <div class="ladder-ms"><b>53.2</b><span>MS</span></div>
       <div class="ladder-n"><b>1337</b><span>/ 3500</span></div>
-      <div class="ladder-delta"><span>+10.97 SR</span></div>
+      <div class="ladder-delta"><span>+11.0 SR</span></div>
     </div>
   </div>
 
   <div class="evidence-row">
     <div class="evidence-card">
-      <span class="evidence-num">[36.94, 39.49]</span>
-      <span class="evidence-label">stratified task/episode bootstrap 95% CI on the 38.20% headline</span>
+      <span class="evidence-num">[36.9, 39.5]</span>
+      <span class="evidence-label">stratified task/episode bootstrap 95% CI on the 38.2% headline</span>
     </div>
     <div class="evidence-card">
-      <span class="evidence-num">p = 2.75×10<sup>−33</sup></span>
-      <span class="evidence-label">exact two-sided McNemar vs History-Flow WAM on 3225 shared raw-seed episodes (+11.22 paired pts)</span>
+      <span class="evidence-num">p = 2.8×10<sup>−33</sup></span>
+      <span class="evidence-label">exact two-sided McNemar vs the w/o-motion variant on 3,225 shared-seed episodes (+11.2 paired pts)</span>
     </div>
     <div class="evidence-card">
       <span class="evidence-num">23 / 2 / 10</span>
-      <span class="evidence-label">task-level win / tie / loss vs History-Flow WAM (24 / 1 / 10 vs Efficient-WAM)</span>
+      <span class="evidence-label">task-level win / tie / loss vs the w/o-motion variant (24 / 1 / 10 vs current-frame)</span>
+    </div>
+  </div>
+
+  <div class="prose">
+    <h3>Where the tokens matter most</h3>
+    <p>
+      The largest gains come from tasks that need accurately <em>timed</em> contact with a moving
+      target — success along current-frame → + flow → full model:
+    </p>
+  </div>
+
+  <div class="task-cards">
+    <div class="task-card">
+      <span class="task-name">move_pillbottle_pad</span>
+      <span class="task-prog">42 <i>→</i> 55 <i>→</i> <b>91</b><span class="unit">%</span></span>
+      <span class="task-note">timed pick from a moving pad</span>
+    </div>
+    <div class="task-card">
+      <span class="task-name">beat_block_hammer</span>
+      <span class="task-prog">36 <i>→</i> 49 <i>→</i> <b>84</b><span class="unit">%</span></span>
+      <span class="task-note">striking a moving block</span>
+    </div>
+    <div class="task-card">
+      <span class="task-name">place_phone_stand</span>
+      <span class="task-prog">33 <i>→</i> 32 <i>→</i> <b>80</b><span class="unit">%</span></span>
+      <span class="task-note">flow alone doesn't help here — the numerical path does</span>
     </div>
   </div>
 
   <p class="honesty-note">
-    Read this as a <em>measured system ladder</em>, not a single-variable ablation: the rungs also
-    differ in training data, schedules and video-refresh policy. Strict flow-only and
-    token-only controls — same data, same initialization, same accepted scenes — are ongoing work.
+    The numerical-path comparison evaluates the complete path — motion tokens together with their
+    associated training stages. And the gains are not uniform: the full model trails the flow-only
+    variant on <code class="inline-code">put_object_cabinet</code> (−10) and
+    <code class="inline-code">place_can_basket</code> (−8); complete per-task results are in the
+    paper's appendix.
+  </p>
+</section>
+
+<!-- ================= REAL WORLD ================= -->
+<section class="section-wide" id="real-world">
+  <div class="prose">
+    <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Results · real robot</p>
+    <h2>46.7% across 12 real-world tasks — and the only scores on compound motion</h2>
+    <p>
+      Twelve tasks in three motion regimes: <strong>linear</strong> — an RC vehicle, an inclined
+      rail, a conveyor belt, a self-propelled toy; <strong>uniform circular</strong> — objects on a
+      rotating turntable; and <strong>nonlinear or compound</strong> — random bouncing,
+      simultaneous translation and rotation, curved trajectories. Every method is fine-tuned on the
+      same 1,200 demonstrations and evaluated for 20 trials per task on Franka Research 3 arms with
+      parallel-jaw grippers. DynamicWAM deploys with Real-Time Chunking: the next action chunk is
+      predicted while the current one executes.
+    </p>
+  </div>
+
+  <div class="table-scroll">
+    <table class="results-table">
+      <thead>
+        <tr><th>Method</th><th>L1 · linear</th><th>L2 · circular</th><th>L3 · compound</th><th>Avg ↑</th></tr>
+      </thead>
+      <tbody>
+        <tr class="group-row"><td colspan="5">External baselines</td></tr>
+        <tr><td>InternVLA-A1.5</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
+        <tr><td>π<sub>0.5</sub></td><td>32.50</td><td>38.75</td><td>0.00</td><td>23.75</td></tr>
+        <tr><td>DynamicVLA</td><td>30.00</td><td>33.75</td><td>0.00</td><td>21.25</td></tr>
+        <tr class="group-row"><td colspan="5">DynamicWAM variants</td></tr>
+        <tr><td>DynamicWAM (w/o flow and motion)</td><td>37.50</td><td>35.00</td><td>2.50</td><td>25.00</td></tr>
+        <tr><td>DynamicWAM (w/o motion)</td><td>51.25</td><td>42.50</td><td>15.00</td><td>36.25</td></tr>
+        <tr class="ours-row"><td>DynamicWAM (ours)</td><td>70.00</td><td>51.25</td><td>18.75</td><td>46.67</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-note">
+    Real-robot success rates (%). The variants keep their simulation ordering — 25.00 → 36.25 →
+    46.67 — and on Level 3 no external baseline records a single success under this protocol.
   </p>
 </section>
 
@@ -349,15 +456,15 @@
     <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Rollouts</p>
     <h2>Watching the policy intercept</h2>
     <p>
-      Side-by-side DOMINO Level-1 rollouts with the rendered flow condition the policy actually
-      saw. Videos are being re-rendered from the evaluated checkpoint and will appear here.
+      Side-by-side DOMINO rollouts with the rendered flow condition the policy actually saw, and
+      real-robot runs across the three motion levels. Videos are in preparation and will appear here.
     </p>
   </div>
   <div class="video-grid">
     <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">DOMINO L1 · rollout + flow overlay</span><span class="video-slot-soon">in preparation</span></div>
-    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">DynamicWAM vs History-Flow WAM</span><span class="video-slot-soon">in preparation</span></div>
-    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">slow vs fast target, same frame</span><span class="video-slot-soon">in preparation</span></div>
-    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">failure cases, honestly</span><span class="video-slot-soon">in preparation</span></div>
+    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">real robot · linear — conveyor &amp; rail</span><span class="video-slot-soon">in preparation</span></div>
+    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">real robot · circular — turntable</span><span class="video-slot-soon">in preparation</span></div>
+    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">real robot · compound — bouncing target</span><span class="video-slot-soon">in preparation</span></div>
   </div>
 </section>
 
@@ -368,10 +475,10 @@
   <div class="bib-box">
     <button class="bib-copy" id="bib-copy" type="button">copy</button>
 <pre id="bib-text">@article{dynamicwam2026,
-  title   = {DynamicWAM: Exact-Time Motion Conditioning
-             for Dynamic Robot Manipulation},
-  author  = {(author list to be finalized)},
-  journal = {Preprint},
+  title   = {DynamicWAM: Dual-Path Motion Conditioning
+             for Dynamic Manipulation},
+  author  = {Anonymous},
+  journal = {Under review},
   year    = {2026}
 }</pre>
   </div>
