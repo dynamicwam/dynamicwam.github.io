@@ -67,48 +67,6 @@
   </div>
 </header>
 
-<!-- ================= SIGNATURE: ALIASING PANEL ================= -->
-<figure class="alias-panel" aria-label="Dynamic aliasing illustration">
-  <div class="alias-head">
-    <span class="panel-tag">Fig. 0 — dynamic aliasing</span>
-    <span class="panel-tag panel-tag-right">two episodes · one observation</span>
-  </div>
-
-  <div class="alias-stage">
-    <div class="lane" data-speed="slow">
-      <span class="lane-label">episode A <b>slow target</b></span>
-      <div class="mover mover-slow"><span class="trail"></span><span class="dot"></span></div>
-    </div>
-    <div class="lane" data-speed="fast">
-      <span class="lane-label">episode B <b>fast target</b></span>
-      <div class="mover mover-fast"><span class="trail"></span><span class="dot"></span></div>
-    </div>
-    <div class="frame-bracket" aria-hidden="true">
-      <span class="corner c-tl"></span><span class="corner c-tr"></span>
-      <span class="corner c-bl"></span><span class="corner c-br"></span>
-      <span class="frame-label">frame at&nbsp;t</span>
-    </div>
-  </div>
-
-  <figcaption class="alias-verdicts">
-    <div class="verdict verdict-bad">
-      <span class="verdict-name">current frame only</span>
-      <span class="verdict-cond">C<sub>base</sub> = (O<sub>t</sub>, ℓ, s<sub>t</sub>)</span>
-      <span class="verdict-word">aliased — A and B are indistinguishable</span>
-    </div>
-    <div class="verdict verdict-mid">
-      <span class="verdict-name">+ history flow</span>
-      <span class="verdict-cond">C<sub>flow</sub> = C<sub>base</sub> ∪ (R<sub>1</sub>…R<sub>4</sub>)</span>
-      <span class="verdict-word">motion visible — but per-map P99 normalization drops its scale</span>
-    </div>
-    <div class="verdict verdict-good">
-      <span class="verdict-name">+ numerical motion tokens</span>
-      <span class="verdict-cond">C<sub>full</sub> = C<sub>flow</sub> ∪ (m<sub>1</sub>…m<sub>4</sub>)</span>
-      <span class="verdict-word">calibrated — displacement, Δt, velocity, acceleration recovered</span>
-    </div>
-  </figcaption>
-</figure>
-
 <!-- ================= ABSTRACT ================= -->
 <section class="prose" id="abstract">
   <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Abstract</p>
@@ -183,66 +141,30 @@
     <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Method</p>
     <h2>Two paths: see motion, measure motion</h2>
     <p>
-      From the timestamped head-camera history, DynamicWAM computes four bidirectional Farnebäck
-      flow intervals on a 64×64 grid, with a forward–backward consistency check rejecting
-      unreliable pixels. The same four intervals feed both conditioning paths.
+      DynamicWAM augments a current-frame world–action model with dual-path motion conditioning.
+      The visual path renders a short history of head-camera optical flow and encodes it together
+      with the current observation; the numerical path injects descriptors of displacement,
+      duration, velocity, and acceleration into the action expert. Flow preserves the spatial
+      organization of motion — the numbers preserve its magnitude and rate.
     </p>
-  </div>
 
-  <div class="arch-panel" role="img" aria-label="DynamicWAM architecture diagram">
-    <div class="arch-col arch-col-src">
-      <div class="arch-node arch-src">timestamped<br>head-camera history</div>
-      <div class="arch-node arch-src">current 3-camera<br>composite O<sub>t</sub></div>
-      <div class="arch-node arch-src">robot state +<br>16 noisy actions</div>
-      <div class="arch-node arch-src">T5 language<br>condition ℓ</div>
-    </div>
-
-    <div class="arch-flowbox">
-      <div class="arch-node arch-shared">4 Farnebäck flow intervals<span class="arch-fine">64×64 · fwd–bwd filtered</span></div>
-      <div class="arch-split">
-        <div class="arch-path arch-path-flow">
-          <span class="arch-path-label">spatial flow path</span>
-          <div class="arch-node">HSV rendering<span class="arch-fine">per-map P99 norm</span></div>
-          <div class="arch-node">5-frame clip<span class="arch-fine">[R<sub>1</sub>…R<sub>4</sub>, O<sub>t</sub>]</span></div>
-          <div class="arch-node">frozen Wan2.2 VAE</div>
-        </div>
-        <div class="arch-path arch-path-time">
-          <span class="arch-path-label">numerical motion path</span>
-          <div class="arch-node">12-D descriptor / interval<span class="arch-fine">d, Δt, v, a — exact sim time</span></div>
-          <div class="arch-node">standardize → 2-layer MLP<span class="arch-fine">+ validity embeddings</span></div>
-          <div class="arch-node">4 × 768 motion tokens</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="arch-experts">
-      <div class="arch-expert arch-expert-video">
-        <span class="arch-expert-name">compact video expert</span>
-        <span class="arch-fine">distilled from Wan2.2-TI2V-5B · 12 blocks · width 2048 · 8 future frames @ 192×160</span>
-      </div>
-      <div class="arch-join">
-        <span class="arch-join-line" aria-hidden="true"></span>
-        <span class="arch-join-label">joint attention<br>in every block</span>
-        <span class="arch-join-line" aria-hidden="true"></span>
-      </div>
-      <div class="arch-expert arch-expert-action">
-        <span class="arch-expert-name">action expert</span>
-        <span class="arch-fine">12 blocks · width 768 · state + 16 actions + 4 motion + 4 register tokens</span>
-      </div>
-    </div>
-
-    <div class="arch-out">
-      <span class="arch-out-arrow" aria-hidden="true">→</span>
-      <div class="arch-node arch-node-out">16 × 14 joint-position action chunk<span class="arch-fine">native lock-step: execute all 16, then refresh</span></div>
-    </div>
-  </div>
-
-  <div class="prose">
-    <h3>The 12 numbers the rendering can't keep</h3>
+    <h3>History-flow conditioning</h3>
     <p>
-      Each of the four intervals contributes one 12-D numerical descriptor, standardized with
-      dataset-level statistics. Spatial quantities live on the 64×64 flow grid; time is exact
-      simulator seconds. Invalid intervals get learned validity embeddings — missing evidence is
+      At each chunk boundary, the recent history is divided into K&nbsp;=&nbsp;4 intervals whose
+      endpoints are Δ&nbsp;=&nbsp;4 policy steps apart. For every interval, dense Farnebäck flow
+      from the fixed head camera passes a forward–backward consistency check; direction becomes
+      hue and magnitude is normalized by the map's own 99th percentile. The four rendered maps are
+      concatenated with the current observation and encoded by the unchanged pretrained video
+      VAE — recent motion travels the same latent pathway as visual appearance, with no separate
+      motion encoder and no change to the robot action space.
+    </p>
+
+    <h3>Numerical motion tokens</h3>
+    <p>
+      Each interval also contributes one 12-D descriptor — exactly the quantities that per-map
+      normalization and rendering discard. Descriptors are standardized with dataset-level
+      statistics, projected by a two-layer MLP, and inserted beside the state and action tokens as
+      four motion tokens. Invalid intervals get learned validity embeddings — missing evidence is
       never silently treated as zero motion.
     </p>
   </div>
@@ -263,6 +185,15 @@
   </div>
 
   <div class="prose">
+    <h3>Fusion and execution</h3>
+    <p>
+      A compact video expert distilled from Wan2.2-TI2V-5B and an action expert attend to each
+      other's keys and values in every block — joint world–action attention. The decoder reads
+      only the state–action core and outputs a 16&nbsp;×&nbsp;14 joint-position chunk. In
+      simulation, inference follows DOMINO's native synchronous protocol; on real robots,
+      Real-Time Chunking predicts the next chunk while the current one executes.
+    </p>
+
     <h3>Training &amp; inference, in one strip</h3>
   </div>
   <div class="spec-strip" aria-label="training and inference specification">

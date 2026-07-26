@@ -21,7 +21,7 @@ if (copyBtn) {
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (!reduced && 'IntersectionObserver' in window) {
   const targets = document.querySelectorAll(
-    '.prose, .alias-panel, .arch-panel, .desc-grid, .spec-strip, .ladder, .evidence-row, .table-scroll, .task-cards, .video-grid'
+    '.prose, .desc-grid, .spec-strip, .ladder, .evidence-row, .table-scroll, .task-cards, .video-grid'
   );
   const io = new IntersectionObserver(entries => {
     for (const e of entries) {
