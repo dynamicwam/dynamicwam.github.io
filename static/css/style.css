@@ -15,8 +15,8 @@
   --font-body: "Noto Sans", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* The text column itself, sized for ~83 characters per line. */
-  --w-measure: 42rem;
+  /* The text column itself, sized for ~95 characters per line. */
+  --w-measure: 48rem;
   --w-wide: 60rem;
 }
 
@@ -29,7 +29,8 @@ body {
   color: var(--text);
   font-family: var(--font-body);
   font-size: 1.1rem;
-  line-height: 1.72;
+  /* Long lines need extra leading so the eye finds the next one. */
+  line-height: 1.78;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
