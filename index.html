@@ -73,6 +73,23 @@
   </p>
 </section>
 
+<!-- ================= TEASER CAROUSEL ================= -->
+<!-- To fill a slide: put the image in assets/figures/ and replace the placeholder div with
+     <img src="assets/figures/your-image.png" alt="..."> (keep the carousel-slide wrapper). -->
+<section class="content content-wide carousel-section" id="teaser" aria-label="figure carousel">
+  <div class="carousel">
+    <button class="carousel-btn prev" type="button" aria-label="previous slide">‹</button>
+    <div class="carousel-track" id="carousel-track">
+      <div class="carousel-slide"><div class="slide-placeholder"><span>Figure slot 1</span><span class="video-slot-soon">in preparation</span></div></div>
+      <div class="carousel-slide"><div class="slide-placeholder"><span>Figure slot 2</span><span class="video-slot-soon">in preparation</span></div></div>
+      <div class="carousel-slide"><div class="slide-placeholder"><span>Figure slot 3</span><span class="video-slot-soon">in preparation</span></div></div>
+      <div class="carousel-slide"><div class="slide-placeholder"><span>Figure slot 4</span><span class="video-slot-soon">in preparation</span></div></div>
+    </div>
+    <button class="carousel-btn next" type="button" aria-label="next slide">›</button>
+  </div>
+  <div class="carousel-dots" id="carousel-dots"></div>
+</section>
+
 <!-- ================= PROBLEM ================= -->
 <section class="content" id="problem">
   <h2 class="section-title">The Problem</h2>
@@ -186,60 +203,24 @@
   <p class="justified">
     We evaluate on DOMINO Level&nbsp;1 in the clean dynamic setting: all 35 tasks, 100 accepted
     episodes per task, unseen language instructions, under the benchmark's native synchronous
-    protocol. DynamicWAM outperforms every evaluated method on both success rate and manipulation
-    score, exceeding the strongest baseline, InternVLA-A1.5, by 8.9 SR points.
+    protocol. DynamicWAM reaches 38.2% SR and 53.2 MS, outperforming every evaluated method on
+    both metrics and exceeding the strongest baseline, InternVLA-A1.5, by 8.9 SR points. Baseline
+    values are taken from the DOMINO paper and the corresponding method papers; the current-frame
+    variant is initialized from the official Efficient-WAM weights and adapted with the same
+    final-stage recipe as the other variants.
   </p>
 
-  <div class="table-scroll">
-    <table class="results-table">
-      <thead>
-        <tr><th>Method</th><th>SR (%) ↑</th><th>MS ↑</th></tr>
-      </thead>
-      <tbody>
-        <tr class="group-row"><td colspan="3">Fine-tuned baselines</td></tr>
-        <tr><td>OpenVLA</td><td>1.5</td><td>6.1</td></tr>
-        <tr><td>π<sub>0</sub>-FAST</td><td>3.5</td><td>20.9</td></tr>
-        <tr><td>VLA-Adapter</td><td>4.4</td><td>24.3</td></tr>
-        <tr><td>RDT-1B</td><td>5.3</td><td>17.7</td></tr>
-        <tr><td>InternVLA-M1</td><td>5.4</td><td>27.6</td></tr>
-        <tr><td>Isaac-GR00T</td><td>6.1</td><td>28.6</td></tr>
-        <tr><td>π<sub>0</sub></td><td>8.2</td><td>24.0</td></tr>
-        <tr><td>OpenVLA-OFT</td><td>9.1</td><td>24.1</td></tr>
-        <tr><td>π<sub>0.5</sub></td><td>9.6</td><td>26.2</td></tr>
-        <tr><td>PUMA</td><td>17.2</td><td>35.0</td></tr>
-        <tr><td>InternVLA-A1.5</td><td><span class="second-best">29.3</span></td><td><span class="second-best">42.5</span></td></tr>
-        <tr class="group-row"><td colspan="3">DynamicWAM variants</td></tr>
-        <tr><td>DynamicWAM (w/o flow and motion)</td><td>22.7</td><td>38.3</td></tr>
-        <tr><td>DynamicWAM (w/o motion)</td><td>27.2</td><td>41.6</td></tr>
-        <tr class="ours-row"><td>DynamicWAM (ours)</td><td>38.2</td><td>53.2</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="table-note">
-    Results on DOMINO Level&nbsp;1 in the clean dynamic setting. Baseline values are taken from the
-    DOMINO paper and the corresponding method papers. The current-frame variant is initialized from
-    the official Efficient-WAM weights and adapted with the same final-stage recipe as the other
-    variants. <b>Bold</b> = best, <span class="second-best">underline</span> = second best.
-  </p>
+  <div class="table-slot"><span class="table-slot-label">Table 1 · DOMINO Level 1 main results</span><span class="video-slot-soon">in preparation</span></div>
 
   <h3>Ablation: two paths, two gains</h3>
   <p class="justified">
     History flow answers <i>where</i> motion is; numerical motion tokens answer <i>how much and
-    how fast</i>. Each path adds its own step:
+    how fast</i>. Each path adds its own step: history-flow conditioning lifts the current-frame
+    WAM from 22.7% to 27.2% SR, and the numerical path lifts it further to 38.2%, with the
+    manipulation score rising 38.3 → 41.6 → 53.2.
   </p>
 
-  <div class="table-scroll table-scroll-narrow">
-    <table class="results-table">
-      <thead>
-        <tr><th>Model variant</th><th>SR (%) ↑</th><th>MS ↑</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Current-frame WAM &nbsp;<code>C<sub>base</sub></code></td><td>22.7</td><td>38.3</td></tr>
-        <tr><td>+ History flow &nbsp;<code>C<sub>flow</sub></code></td><td>27.2</td><td>41.6</td></tr>
-        <tr class="ours-row"><td>+ Numerical motion tokens &nbsp;<code>C<sub>full</sub></code></td><td>38.2</td><td>53.2</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="table-slot"><span class="table-slot-label">Table 2 · ablation of the two motion-conditioning paths</span><span class="video-slot-soon">in preparation</span></div>
 
   <p class="justified">
     The headline result is statistically solid: a stratified task–episode bootstrap gives a 95%
@@ -276,27 +257,13 @@
     Research 3 arms with parallel-jaw grippers. DynamicWAM deploys with Real-Time Chunking.
   </p>
 
-  <div class="table-scroll">
-    <table class="results-table">
-      <thead>
-        <tr><th>Method</th><th>L1 · linear</th><th>L2 · circular</th><th>L3 · compound</th><th>Avg ↑</th></tr>
-      </thead>
-      <tbody>
-        <tr class="group-row"><td colspan="5">External baselines</td></tr>
-        <tr><td>InternVLA-A1.5</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0.00</td></tr>
-        <tr><td>π<sub>0.5</sub></td><td>32.50</td><td>38.75</td><td>0.00</td><td>23.75</td></tr>
-        <tr><td>DynamicVLA</td><td>30.00</td><td>33.75</td><td>0.00</td><td>21.25</td></tr>
-        <tr class="group-row"><td colspan="5">DynamicWAM variants</td></tr>
-        <tr><td>DynamicWAM (w/o flow and motion)</td><td>37.50</td><td>35.00</td><td>2.50</td><td>25.00</td></tr>
-        <tr><td>DynamicWAM (w/o motion)</td><td>51.25</td><td>42.50</td><td>15.00</td><td>36.25</td></tr>
-        <tr class="ours-row"><td>DynamicWAM (ours)</td><td>70.00</td><td>51.25</td><td>18.75</td><td>46.67</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="table-note">
-    Real-robot success rates (%) after fine-tuning all methods on the same 1,200-demonstration
-    dataset. The variants keep their simulation ordering — 25.00 → 36.25 → 46.67 — and on Level 3
-    no external baseline records a single success under this protocol.
+  <div class="table-slot"><span class="table-slot-label">Table 3 · real-robot success rates across three motion levels</span><span class="video-slot-soon">in preparation</span></div>
+
+  <p class="justified">
+    DynamicWAM achieves the highest success rate at every level — 70.00% linear, 51.25% circular,
+    and 18.75% compound — averaging 46.67%, against 23.75% for the strongest external baseline,
+    π<sub>0.5</sub>. The variants keep their simulation ordering (25.00 → 36.25 → 46.67), and on
+    Level 3 no external baseline records a single success under this protocol.
   </p>
 </section>
 
