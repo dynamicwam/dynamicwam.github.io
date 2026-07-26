@@ -15,8 +15,8 @@
   --font-body: "Noto Sans", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* The text column itself, sized for ~74 characters per line. */
-  --w-measure: 38.5rem;
+  /* The text column itself, sized for ~83 characters per line. */
+  --w-measure: 42rem;
   --w-wide: 60rem;
 }
 
