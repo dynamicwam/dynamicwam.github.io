@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>DynamicWAM — Exact-Time Motion Conditioning for Dynamic Manipulation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DynamicWAM couples rendered history-flow images with exact-time numeric motion tokens through layer-wise video–action joint attention. 38.2% SR on DOMINO Level 1.">
+  <meta property="og:title" content="DynamicWAM">
+  <meta property="og:description" content="Dynamic manipulation needs to see motion — and to measure it.">
+  <link rel="icon" type="image/svg+xml" href="static/images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+<nav class="topbar" aria-label="main">
+  <a class="wordmark" href="#top">Dynamic<span>WAM</span></a>
+  <div class="topbar-links">
+    <a href="#problem">Problem</a>
+    <a href="#method">Method</a>
+    <a href="#results">Results</a>
+    <a href="#bibtex">BibTeX</a>
+    <a class="topbar-gh" href="https://github.com/dynamicwam" aria-label="GitHub">
+      <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Preprint · 2026</p>
+  <h1 class="hero-title">DynamicWAM</h1>
+  <p class="hero-thesis">Dynamic manipulation needs to <em>see</em> motion —<br class="desktop-br"> and to <em>measure</em> it.</p>
+  <p class="hero-sub">
+    A world-action model conditioned through two complementary paths: rendered history-flow
+    images expose <span class="k-slow">where motion happens</span>, and exact-time numeric motion
+    tokens restore <span class="k-fast">how large and how fast</span> — the magnitude and timing
+    that flow rendering removes.
+  </p>
+
+  <p class="authors">Author list to be finalized&ensp;·&ensp;2026</p>
+
+  <div class="hero-actions">
+    <a class="btn btn-disabled" aria-disabled="true" href="#" onclick="return false"><span class="btn-icon">¶</span>Paper<span class="btn-soon">soon</span></a>
+    <a class="btn" href="https://github.com/dynamicwam"><span class="btn-icon">&lt;/&gt;</span>Code</a>
+    <a class="btn btn-disabled" aria-disabled="true" href="#" onclick="return false"><span class="btn-icon">▦</span>DOMINO benchmark<span class="btn-soon">soon</span></a>
+    <a class="btn btn-ghost" href="#bibtex"><span class="btn-icon">”</span>BibTeX</a>
+  </div>
+
+  <div class="hero-stats" role="group" aria-label="headline result">
+    <div class="hero-stat">
+      <span class="hero-stat-num">38.2<span class="unit">%</span></span>
+      <span class="hero-stat-label">success rate · DOMINO Level&nbsp;1</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">53.2</span>
+      <span class="hero-stat-label">manipulation score</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">+15.5<span class="unit">pts</span></span>
+      <span class="hero-stat-label">over the motion-free reference</span>
+    </div>
+  </div>
+</header>
+
+<!-- ================= SIGNATURE: ALIASING PANEL ================= -->
+<figure class="alias-panel" aria-label="Dynamic aliasing illustration">
+  <div class="alias-head">
+    <span class="panel-tag">Fig. 0 — dynamic aliasing</span>
+    <span class="panel-tag panel-tag-right">two episodes · one observation</span>
+  </div>
+
+  <div class="alias-stage">
+    <div class="lane" data-speed="slow">
+      <span class="lane-label">episode A <b>slow target</b></span>
+      <div class="mover mover-slow"><span class="trail"></span><span class="dot"></span></div>
+    </div>
+    <div class="lane" data-speed="fast">
+      <span class="lane-label">episode B <b>fast target</b></span>
+      <div class="mover mover-fast"><span class="trail"></span><span class="dot"></span></div>
+    </div>
+    <div class="frame-bracket" aria-hidden="true">
+      <span class="corner c-tl"></span><span class="corner c-tr"></span>
+      <span class="corner c-bl"></span><span class="corner c-br"></span>
+      <span class="frame-label">frame at&nbsp;t</span>
+    </div>
+  </div>
+
+  <figcaption class="alias-verdicts">
+    <div class="verdict verdict-bad">
+      <span class="verdict-name">current frame only</span>
+      <span class="verdict-cond">C<sub>eff</sub> = (O<sub>t</sub>, ℓ, s<sub>t</sub>)</span>
+      <span class="verdict-word">aliased — A and B are indistinguishable</span>
+    </div>
+    <div class="verdict verdict-mid">
+      <span class="verdict-name">+ history flow</span>
+      <span class="verdict-cond">C<sub>flow</sub> = C<sub>eff</sub> ∪ (R<sub>1</sub>…R<sub>4</sub>)</span>
+      <span class="verdict-word">motion visible — but per-map P99 normalization drops its scale</span>
+    </div>
+    <div class="verdict verdict-good">
+      <span class="verdict-name">+ exact-time tokens</span>
+      <span class="verdict-cond">C<sub>full</sub> = C<sub>flow</sub> ∪ (m<sub>1</sub>…m<sub>4</sub>)</span>
+      <span class="verdict-word">calibrated — displacement, Δt, velocity, acceleration recovered</span>
+    </div>
+  </figcaption>
+</figure>
+
+<!-- ================= ABSTRACT ================= -->
+<section class="prose" id="abstract">
+  <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Abstract</p>
+  <p class="abstract-text">
+    Dynamic manipulation places two distinct information requirements on a visuomotor policy.
+    Motion must be <em>observable</em>: the policy has to see how the scene is changing, not only
+    its current appearance. And motion must be <em>calibrated</em>: displacement scale and elapsed
+    time have to survive all the way to the policy, so that slow and fast versions of the same
+    scene do not collapse into one condition. A policy conditioned only on the current observation
+    is dynamically aliased — two trajectories can reach the same image and robot state while the
+    target moves at different velocities. Rendered optical flow makes motion visible, but
+    per-map normalization makes the rendering scale-invariant: it preserves direction and spatial
+    structure while discarding globally comparable speed.
+  </p>
+  <p class="abstract-text">
+    DynamicWAM conditions a compact video–action model through two complementary paths. Four
+    rendered head-camera flow maps expose where motion occurs and its spatial structure; four
+    exact-time 12-dimensional motion descriptors — displacement, interval duration, velocity,
+    acceleration — are mapped to action-side motion tokens that restore what the rendering removed.
+    The two paths meet through layer-wise joint attention between a compact video expert and an
+    action expert. Under the DOMINO Level-1 native synchronous protocol (35 tasks × 100 episodes,
+    execute-16), the motion-free Efficient-WAM reference obtains 22.7% success, History-Flow WAM
+    27.2%, and the complete DynamicWAM pipeline reaches <strong>38.2% success</strong> with a
+    manipulation score of <strong>53.2</strong>.
+  </p>
+</section>
+
+<!-- ================= PROBLEM ================= -->
+<section class="prose" id="problem">
+  <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>The problem</p>
+  <h2>The current frame is not enough — and normalized flow is not calibrated</h2>
+  <p>
+    A motion-free world-action model conditions on the current composite observation, the language
+    instruction, and the robot state. In a dynamic scene this condition is ambiguous by
+    construction: the same image and the same joint readings are compatible with a target that is
+    creeping and a target that is sprinting. Whatever the policy does next, it is guessing the one
+    variable that decides interception — velocity.
+  </p>
+  <p>
+    Adding rendered optical-flow history repairs observability, but not calibration. Each flow map
+    is rendered with direction as hue and magnitude normalized by that map's own 99th percentile,
+    so scaling the underlying flow field leaves the rendering unchanged:
+  </p>
+  <div class="math-line" role="img" aria-label="rho of alpha U equals rho of U for positive alpha">
+    ρ(αU) = ρ(U),&ensp;α &gt; 0
+  </div>
+  <p>
+    The image can say <em>“the target is moving up-right, over here”</em> — it cannot say
+    <em>how fast</em>. DynamicWAM's answer is a division of labor, not generic multimodal fusion:
+    flow images carry spatial motion structure, and a separate numeric path carries the magnitude
+    and time variables the rendering discards.
+  </p>
+
+  <div class="cond-ladder" aria-label="conditioning ladder">
+    <div class="cond-row">
+      <code>C<sub>eff</sub>&nbsp; = (O<sub>t</sub>, ℓ, s<sub>t</sub>)</code>
+      <span class="cond-note cond-note-bad">dynamically aliased</span>
+    </div>
+    <div class="cond-row">
+      <code>C<sub>flow</sub> = C<sub>eff</sub> + (R<sub>1</sub>…R<sub>4</sub>)</code>
+      <span class="cond-note cond-note-mid">observable, uncalibrated</span>
+    </div>
+    <div class="cond-row">
+      <code>C<sub>full</sub> = C<sub>flow</sub> + (m<sub>1</sub>…m<sub>4</sub>)</code>
+      <span class="cond-note cond-note-good">observable + calibrated</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= METHOD ================= -->
+<section class="section-wide" id="method">
+  <div class="prose">
+    <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Method</p>
+    <h2>Two paths: see motion, measure motion</h2>
+    <p>
+      From the timestamped head-camera history, DynamicWAM computes four bidirectional Farnebäck
+      flow intervals on a 64×64 grid, with a forward–backward consistency check rejecting
+      unreliable pixels. The same four intervals feed both conditioning paths.
+    </p>
+  </div>
+
+  <div class="arch-panel" role="img" aria-label="DynamicWAM architecture diagram">
+    <div class="arch-col arch-col-src">
+      <div class="arch-node arch-src">timestamped<br>head-camera history</div>
+      <div class="arch-node arch-src">current 3-camera<br>composite O<sub>t</sub></div>
+      <div class="arch-node arch-src">robot state +<br>16 noisy actions</div>
+      <div class="arch-node arch-src">T5 language<br>condition ℓ</div>
+    </div>
+
+    <div class="arch-flowbox">
+      <div class="arch-node arch-shared">4 Farnebäck flow intervals<span class="arch-fine">64×64 · fwd–bwd filtered</span></div>
+      <div class="arch-split">
+        <div class="arch-path arch-path-flow">
+          <span class="arch-path-label">spatial flow path</span>
+          <div class="arch-node">HSV rendering<span class="arch-fine">per-map P99 norm</span></div>
+          <div class="arch-node">5-frame clip<span class="arch-fine">[R<sub>1</sub>…R<sub>4</sub>, O<sub>t</sub>]</span></div>
+          <div class="arch-node">frozen Wan2.2 VAE</div>
+        </div>
+        <div class="arch-path arch-path-time">
+          <span class="arch-path-label">exact-time numeric path</span>
+          <div class="arch-node">12-D descriptor / interval<span class="arch-fine">d, Δt, v, a — exact sim time</span></div>
+          <div class="arch-node">standardize → 2-layer MLP<span class="arch-fine">+ validity embeddings</span></div>
+          <div class="arch-node">4 × 768 motion tokens</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-experts">
+      <div class="arch-expert arch-expert-video">
+        <span class="arch-expert-name">compact video expert</span>
+        <span class="arch-fine">12 blocks · width 2048 · 8 future frames @ 192×160</span>
+      </div>
+      <div class="arch-join">
+        <span class="arch-join-line" aria-hidden="true"></span>
+        <span class="arch-join-label">joint attention<br>in every block</span>
+        <span class="arch-join-line" aria-hidden="true"></span>
+      </div>
+      <div class="arch-expert arch-expert-action">
+        <span class="arch-expert-name">action expert</span>
+        <span class="arch-fine">12 blocks · width 768 · state + 16 actions + 4 motion + 4 register tokens</span>
+      </div>
+    </div>
+
+    <div class="arch-out">
+      <span class="arch-out-arrow" aria-hidden="true">→</span>
+      <div class="arch-node arch-node-out">16 × 14 joint-position action chunk<span class="arch-fine">native lock-step: execute all 16, then refresh</span></div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <h3>The 12 numbers the rendering can't keep</h3>
+    <p>
+      Each of the four intervals contributes one exact-time descriptor, standardized with
+      dataset-global statistics. Spatial quantities live on the 64×64 flow grid; time is exact
+      simulator seconds. Invalid intervals get learned validity embeddings — missing evidence is
+      never silently treated as zero motion.
+    </p>
+  </div>
+
+  <div class="desc-grid" role="list" aria-label="12-dimensional motion descriptor">
+    <div class="desc-cell" role="listitem"><b>d̄<sub>x</sub></b><span>mean signed displacement</span></div>
+    <div class="desc-cell" role="listitem"><b>d̄<sub>y</sub></b><span>mean signed displacement</span></div>
+    <div class="desc-cell" role="listitem"><b>|d&#772;|</b><span>mean magnitude</span></div>
+    <div class="desc-cell" role="listitem"><b>|d|<sub>99</sub></b><span>P99 magnitude</span></div>
+    <div class="desc-cell desc-cell-hot" role="listitem"><b>Δt</b><span>exact interval duration</span></div>
+    <div class="desc-cell" role="listitem"><b>v̄<sub>x</sub></b><span>mean velocity</span></div>
+    <div class="desc-cell" role="listitem"><b>v̄<sub>y</sub></b><span>mean velocity</span></div>
+    <div class="desc-cell" role="listitem"><b>s̄</b><span>mean speed</span></div>
+    <div class="desc-cell" role="listitem"><b>s<sub>99</sub></b><span>P99 speed</span></div>
+    <div class="desc-cell" role="listitem"><b>ā<sub>x</sub></b><span>mean acceleration</span></div>
+    <div class="desc-cell" role="listitem"><b>ā<sub>y</sub></b><span>mean acceleration</span></div>
+    <div class="desc-cell" role="listitem"><b>|a&#772;|</b><span>mean acc. magnitude</span></div>
+  </div>
+
+  <div class="prose">
+    <h3>Training &amp; inference, in one strip</h3>
+  </div>
+  <div class="spec-strip" aria-label="training and inference specification">
+    <div class="spec"><b>10,500</b><span>episodes · 35 tasks<br>clean + randomized</span></div>
+    <div class="spec"><b>1.43M</b><span>training windows<br>143 packed shards</span></div>
+    <div class="spec"><b>80k + 80k + 40k</b><span>video distill → action →<br>joint fine-tune steps</span></div>
+    <div class="spec"><b>10</b><span>flow-matching steps<br>KV cache after step 1</span></div>
+    <div class="spec"><b>16 @ 100 ms</b><span>actions executed per chunk<br>synchronous lock-step</span></div>
+  </div>
+</section>
+
+<!-- ================= RESULTS ================= -->
+<section class="section-wide" id="results">
+  <div class="prose">
+    <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Results</p>
+    <h2>A three-rung system ladder on DOMINO Level 1</h2>
+    <p>
+      All rows are complete 35-task evaluations under one archived benchmark contract:
+      100 accepted episodes per task, unseen instructions, native synchronous execution,
+      <code class="inline-code">start_seed 100000</code>.
+    </p>
+  </div>
+
+  <div class="ladder">
+    <div class="ladder-row">
+      <div class="ladder-name">
+        <span class="ladder-rung">motion-free</span>
+        <b>Efficient-WAM reference</b>
+        <span class="ladder-cond">C<sub>eff</sub> — current observation only</span>
+      </div>
+      <div class="ladder-sr"><b>22.71<span class="unit">%</span></b><span>SR</span></div>
+      <div class="ladder-ms"><b>38.32</b><span>MS</span></div>
+      <div class="ladder-n"><b>795</b><span>/ 3500</span></div>
+      <div class="ladder-delta"></div>
+    </div>
+    <div class="ladder-row">
+      <div class="ladder-name">
+        <span class="ladder-rung">+ flow images</span>
+        <b>History-Flow WAM</b>
+        <span class="ladder-cond">C<sub>flow</sub> — motion visible, scale-free</span>
+      </div>
+      <div class="ladder-sr"><b>27.23<span class="unit">%</span></b><span>SR</span></div>
+      <div class="ladder-ms"><b>41.62</b><span>MS</span></div>
+      <div class="ladder-n"><b>953</b><span>/ 3500</span></div>
+      <div class="ladder-delta"><span>+4.51 SR</span></div>
+    </div>
+    <div class="ladder-row ladder-row-final">
+      <div class="ladder-name">
+        <span class="ladder-rung">+ exact-time tokens</span>
+        <b>DynamicWAM</b>
+        <span class="ladder-cond">C<sub>full</sub> — observable + calibrated</span>
+      </div>
+      <div class="ladder-sr"><b>38.20<span class="unit">%</span></b><span>SR</span></div>
+      <div class="ladder-ms"><b>53.16</b><span>MS</span></div>
+      <div class="ladder-n"><b>1337</b><span>/ 3500</span></div>
+      <div class="ladder-delta"><span>+10.97 SR</span></div>
+    </div>
+  </div>
+
+  <div class="evidence-row">
+    <div class="evidence-card">
+      <span class="evidence-num">[36.94, 39.49]</span>
+      <span class="evidence-label">stratified task/episode bootstrap 95% CI on the 38.20% headline</span>
+    </div>
+    <div class="evidence-card">
+      <span class="evidence-num">p = 2.75×10<sup>−33</sup></span>
+      <span class="evidence-label">exact two-sided McNemar vs History-Flow WAM on 3225 shared raw-seed episodes (+11.22 paired pts)</span>
+    </div>
+    <div class="evidence-card">
+      <span class="evidence-num">23 / 2 / 10</span>
+      <span class="evidence-label">task-level win / tie / loss vs History-Flow WAM (24 / 1 / 10 vs Efficient-WAM)</span>
+    </div>
+  </div>
+
+  <p class="honesty-note">
+    Read this as a <em>measured system ladder</em>, not a single-variable ablation: the rungs also
+    differ in training data, schedules and video-refresh policy. Strict flow-only and
+    token-only controls — same data, same initialization, same accepted scenes — are ongoing work.
+  </p>
+</section>
+
+<!-- ================= ROLLOUTS ================= -->
+<section class="section-wide" id="rollouts">
+  <div class="prose">
+    <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Rollouts</p>
+    <h2>Watching the policy intercept</h2>
+    <p>
+      Side-by-side DOMINO Level-1 rollouts with the rendered flow condition the policy actually
+      saw. Videos are being re-rendered from the evaluated checkpoint and will appear here.
+    </p>
+  </div>
+  <div class="video-grid">
+    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">DOMINO L1 · rollout + flow overlay</span><span class="video-slot-soon">in preparation</span></div>
+    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">DynamicWAM vs History-Flow WAM</span><span class="video-slot-soon">in preparation</span></div>
+    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">slow vs fast target, same frame</span><span class="video-slot-soon">in preparation</span></div>
+    <div class="video-slot"><span class="play-glyph" aria-hidden="true"></span><span class="video-slot-label">failure cases, honestly</span><span class="video-slot-soon">in preparation</span></div>
+  </div>
+</section>
+
+<!-- ================= BIBTEX ================= -->
+<section class="prose" id="bibtex">
+  <p class="eyebrow"><span class="hue-tick" aria-hidden="true"></span>Cite</p>
+  <h2>BibTeX</h2>
+  <div class="bib-box">
+    <button class="bib-copy" id="bib-copy" type="button">copy</button>
+<pre id="bib-text">@article{dynamicwam2026,
+  title   = {DynamicWAM: Exact-Time Motion Conditioning
+             for Dynamic Robot Manipulation},
+  author  = {(author list to be finalized)},
+  journal = {Preprint},
+  year    = {2026}
+}</pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>© 2026 the DynamicWAM authors</span>
+  <span class="footer-sep" aria-hidden="true">·</span>
+  <a href="https://github.com/dynamicwam/dynamicwam.github.io">site source</a>
+  <span class="footer-sep" aria-hidden="true">·</span>
+  <span>hand-set in Archivo, Source Serif&nbsp;4 &amp; IBM Plex Mono</span>
+</footer>
+
+<script src="static/js/main.js"></script>
+</body>
+</html>
