@@ -15,7 +15,8 @@
   --font-body: "Noto Sans", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --w-text: 50rem;
+  /* The text column itself, sized for ~74 characters per line. */
+  --w-measure: 38.5rem;
   --w-wide: 60rem;
 }
 
@@ -27,8 +28,8 @@ body {
   background: #ffffff;
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 1.05rem;
-  line-height: 1.65;
+  font-size: 1.1rem;
+  line-height: 1.72;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -105,21 +106,24 @@ code {
 .publication-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.8rem, 4.6vw, 3rem);
+  font-size: clamp(1.85rem, 4.4vw, 2.85rem);
   line-height: 1.2;
+  letter-spacing: -0.02em;
   color: var(--ink);
-  margin-bottom: 1.4rem;
+  text-wrap: balance;
+  max-width: 32ch;
+  margin: 0 auto 1.4rem;
 }
 
 .authors {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   color: var(--accent);
   margin-bottom: 0.3rem;
 }
 .affiliation {
   font-family: var(--font-display);
-  font-size: 0.98rem;
+  font-size: 1rem;
   color: var(--muted);
 }
 
@@ -169,31 +173,47 @@ code {
 /* ---------- sections ---------- */
 
 .content {
-  max-width: var(--w-text);
+  max-width: calc(var(--w-measure) + 2.8rem);
   margin: 0 auto;
-  padding: 3.2rem 1.4rem 0;
+  padding: 3.4rem 1.4rem 0;
 }
 .content-wide { max-width: var(--w-wide); }
+
+/* Prose keeps the reading measure even where tables and figures run wide. */
+.content-wide > p,
+.content-wide > h3 {
+  max-width: var(--w-measure);
+  margin-left: auto;
+  margin-right: auto;
+}
 
 .section-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 1.95rem;
+  letter-spacing: -0.015em;
   color: var(--ink);
   text-align: center;
+  text-wrap: balance;
   margin-bottom: 1.5rem;
 }
 
 h3 {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 1.24rem;
+  letter-spacing: -0.008em;
   color: var(--ink);
-  margin: 2.2rem 0 0.7rem;
+  margin: 2.4rem 0 0.65rem;
 }
 
-.justified { text-align: justify; }
-.content p + p { margin-top: 1rem; }
+/* Ragged right, not justified: browsers reach 1.5-1.9x word spacing to justify
+   this measure, and hyphenation cannot be relied on to absorb it. */
+.prose {
+  text-align: left;
+  text-wrap: pretty;
+}
+.content p + p { margin-top: 1.1rem; }
 
 /* ---------- problem ---------- */
 
@@ -253,9 +273,9 @@ h3 {
   color: var(--ink);
 }
 .desc-cell span {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   color: var(--muted);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 .desc-cell-hot { border-color: var(--accent); background: var(--accent-soft); }
 .desc-cell-hot b { color: var(--accent); }
@@ -508,13 +528,10 @@ h3 {
 
   .hero { padding-top: 2.6rem; }
   .hero-logo { width: 150px; height: 150px; }
-  .desktop-br { display: none; }
 
   .desc-grid { grid-template-columns: repeat(3, 1fr); }
   .video-grid { grid-template-columns: 1fr; }
   .carousel-track { padding: 0 9%; gap: 0.6rem; }
-  .justified { text-align: left; }
-  .table-note { text-align: left; }
 }
 
 @media (prefers-reduced-motion: reduce) {
