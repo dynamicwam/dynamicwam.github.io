@@ -306,13 +306,17 @@ h3 {
   scroll-snap-align: center;
   aspect-ratio: 2 / 1;
   display: flex;
-  opacity: 0.4;
-  transform: scale(0.93);
-  transition: opacity 350ms ease, transform 350ms ease;
+  opacity: 0.35;
+  transform: scale(0.92);
+  cursor: pointer;
+  transition:
+    opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .carousel-slide.is-active {
   opacity: 1;
   transform: none;
+  cursor: default;
 }
 .carousel-slide img {
   width: 100%;
@@ -353,8 +357,18 @@ h3 {
   align-items: center;
   justify-content: center;
   padding-bottom: 3px;
+  box-shadow: 0 1px 4px rgba(22, 24, 29, 0.06);
+  transition: border-color 180ms ease, box-shadow 180ms ease, opacity 240ms ease;
 }
-.carousel-btn:hover { border-color: var(--muted); }
+.carousel-btn:hover {
+  border-color: var(--muted);
+  box-shadow: 0 2px 10px rgba(22, 24, 29, 0.12);
+}
+.carousel-btn:active { box-shadow: none; }
+.carousel-btn[aria-disabled="true"] {
+  opacity: 0.25;
+  pointer-events: none;
+}
 .carousel-btn.prev { left: 0.7rem; }
 .carousel-btn.next { right: 0.7rem; }
 
@@ -367,13 +381,20 @@ h3 {
 .carousel-dot {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 999px;
   background: #d5d5d0;
   border: none;
   cursor: pointer;
   padding: 0;
+  transition:
+    width 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 320ms ease;
 }
-.carousel-dot.active { background: var(--accent); }
+.carousel-dot:hover { background: #b4b4ae; }
+.carousel-dot.active {
+  width: 22px;
+  background: var(--accent);
+}
 
 /* ---------- rollouts ---------- */
 
@@ -498,5 +519,7 @@ h3 {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .carousel-slide { transition: none; }
+  .carousel-slide,
+  .carousel-dot,
+  .carousel-btn { transition: none; }
 }

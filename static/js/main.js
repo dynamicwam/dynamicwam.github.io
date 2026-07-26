@@ -3,7 +3,8 @@ const track = document.getElementById('carousel-track');
 if (track) {
   const slides = Array.from(track.children);
   const dotsBox = document.getElementById('carousel-dots');
-  let current = 0;
+  let current = 0;      // slide nearest the centre right now
+  let heading = 0;      // slide being animated towards, so fast clicks accumulate
 
   const dots = slides.map((_, i) => {
     const dot = document.createElement('button');
@@ -14,7 +15,10 @@ if (track) {
     return dot;
   });
 
+  const prevBtn = document.querySelector('.carousel-btn.prev');
+  const nextBtn = document.querySelector('.carousel-btn.next');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let animation = null;
 
   function centreOf(i) {
     const slide = slides[i];
@@ -23,25 +27,36 @@ if (track) {
 
   function goTo(i) {
     const index = Math.max(0, Math.min(slides.length - 1, i));
+    heading = index;
     const target = centreOf(index);
     const from = track.scrollLeft;
     const distance = target - from;
-    if (reduced || !distance) {
+
+    if (animation) cancelAnimationFrame(animation);
+    if (reduced || Math.abs(distance) < 1) {
       track.scrollLeft = target;
+      track.style.scrollSnapType = '';
+      sync();
       return;
     }
-    // Snap is suspended for the duration so it cannot fight the animation.
-    const duration = 380;
+
+    // Longer glide for longer jumps, so a dot two slides away doesn't snap past.
+    const duration = Math.min(640, 300 + Math.abs(distance) * 0.28);
     const started = performance.now();
+    // Snap is suspended for the duration so it cannot fight the animation.
     track.style.scrollSnapType = 'none';
     const step = now => {
       const p = Math.min(1, (now - started) / duration);
-      const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      const eased = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
       track.scrollLeft = from + distance * eased;
-      if (p < 1) requestAnimationFrame(step);
-      else track.style.scrollSnapType = '';
+      if (p < 1) {
+        animation = requestAnimationFrame(step);
+      } else {
+        animation = null;
+        track.style.scrollSnapType = '';
+      }
     };
-    requestAnimationFrame(step);
+    animation = requestAnimationFrame(step);
   }
 
   function sync() {
@@ -53,16 +68,29 @@ if (track) {
       if (distance < smallest) { smallest = distance; nearest = i; }
     });
     current = nearest;
+    if (!animation) heading = nearest;   // a swipe or trackpad scroll re-bases the queue
     slides.forEach((slide, i) => slide.classList.toggle('is-active', i === nearest));
     dots.forEach((dot, i) => dot.classList.toggle('active', i === nearest));
+    prevBtn.setAttribute('aria-disabled', String(heading === 0));
+    nextBtn.setAttribute('aria-disabled', String(heading === slides.length - 1));
   }
 
   track.addEventListener('scroll', sync, { passive: true });
   window.addEventListener('resize', sync);
   sync();
 
-  document.querySelector('.carousel-btn.prev').addEventListener('click', () => goTo(current - 1));
-  document.querySelector('.carousel-btn.next').addEventListener('click', () => goTo(current + 1));
+  prevBtn.addEventListener('click', () => goTo(heading - 1));
+  nextBtn.addEventListener('click', () => goTo(heading + 1));
+
+  // A peeking slide is a target, not just decoration.
+  slides.forEach((slide, i) => slide.addEventListener('click', () => {
+    if (i !== heading) goTo(i);
+  }));
+
+  track.closest('.carousel').addEventListener('keydown', event => {
+    if (event.key === 'ArrowLeft') { event.preventDefault(); goTo(heading - 1); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); goTo(heading + 1); }
+  });
 }
 
 // BibTeX copy
