@@ -15,9 +15,10 @@
   --font-body: "Noto Sans", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* The text column itself, sized for ~95 characters per line. */
-  --w-measure: 48rem;
-  --w-wide: 60rem;
+  /* The text column, deliberately wider than the figure blocks (~108 characters). */
+  --w-measure: 54rem;
+  --w-section: calc(var(--w-measure) + 2.8rem);   /* measure plus the section padding */
+  --w-figure: 51rem;                               /* carousel, placeholders, card grids */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,7 +31,7 @@ body {
   font-family: var(--font-body);
   font-size: 1.1rem;
   /* Long lines need extra leading so the eye finds the next one. */
-  line-height: 1.78;
+  line-height: 1.8;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -91,7 +92,7 @@ code {
 /* ---------- hero ---------- */
 
 .hero {
-  max-width: var(--w-wide);
+  max-width: var(--w-section);
   margin: 0 auto;
   padding: 3.8rem 1.4rem 1rem;
   text-align: center;
@@ -174,16 +175,20 @@ code {
 /* ---------- sections ---------- */
 
 .content {
-  max-width: calc(var(--w-measure) + 2.8rem);
+  max-width: var(--w-section);
   margin: 0 auto;
   padding: 3.4rem 1.4rem 0;
 }
-.content-wide { max-width: var(--w-wide); }
 
-/* Prose keeps the reading measure even where tables and figures run wide. */
-.content-wide > p,
-.content-wide > h3 {
-  max-width: var(--w-measure);
+/* Figures and card grids sit inside the text column, narrower than the prose. */
+.carousel,
+.carousel-dots,
+.table-slot,
+.video-grid,
+.desc-grid,
+.cond-ladder,
+.bib-box {
+  max-width: var(--w-figure);
   margin-left: auto;
   margin-right: auto;
 }
