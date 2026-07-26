@@ -287,19 +287,32 @@ h3 {
 .carousel { position: relative; }
 
 .carousel-track {
+  position: relative;
   display: flex;
+  gap: 1rem;
+  padding: 0 16%;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  /* No scroll-behavior here: smooth scrolling gets cancelled on a mandatory-snap
+     container, so main.js animates scrollLeft itself. */
   scrollbar-width: none;
-  border-radius: 8px;
 }
 .carousel-track::-webkit-scrollbar { display: none; }
 
+/* 100% of the track's content box, which the 16% side padding already narrows —
+   that padding is also what lets the first and last slide reach the centre. */
 .carousel-slide {
   flex: 0 0 100%;
   scroll-snap-align: center;
   aspect-ratio: 2 / 1;
   display: flex;
+  opacity: 0.4;
+  transform: scale(0.93);
+  transition: opacity 350ms ease, transform 350ms ease;
+}
+.carousel-slide.is-active {
+  opacity: 1;
+  transform: none;
 }
 .carousel-slide img {
   width: 100%;
@@ -478,10 +491,12 @@ h3 {
 
   .desc-grid { grid-template-columns: repeat(3, 1fr); }
   .video-grid { grid-template-columns: 1fr; }
+  .carousel-track { padding: 0 9%; gap: 0.6rem; }
   .justified { text-align: left; }
   .table-note { text-align: left; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .carousel-slide { transition: none; }
 }
