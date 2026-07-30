@@ -28,9 +28,11 @@ body {
   background: #ffffff;
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 1.1rem;
+  font-size: 1.16rem;
+  font-weight: 500;
+  letter-spacing: 0.008em;
   /* Long lines need extra leading so the eye finds the next one. */
-  line-height: 1.8;
+  line-height: 1.85;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -38,7 +40,7 @@ body {
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: #205cbc; text-decoration: underline; }
 
-b, strong { color: var(--ink); }
+b, strong { color: var(--ink); font-weight: 700; }
 
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -173,7 +175,7 @@ code {
 .section-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.95rem;
+  font-size: 2.1rem;
   letter-spacing: -0.015em;
   color: var(--ink);
   text-align: center;
@@ -203,8 +205,8 @@ code {
 .fig figcaption {
   max-width: var(--w-measure);
   margin: 0.9rem auto 0;
-  font-size: 0.92rem;
-  line-height: 1.65;
+  font-size: 0.96rem;
+  line-height: 1.68;
   color: var(--muted);
   text-align: left;
 }
