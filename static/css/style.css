@@ -15,9 +15,11 @@
   --font-body: "Noto Sans", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
-  /* Text column (~108 characters per line); figures sit slightly narrower. */
-  --w-measure: 54rem;
+  /* Wide text column with little side whitespace; figures KEEP their original
+     size (54rem, do not shrink them), so the wider prose overhangs the images. */
+  --w-measure: 68rem;
   --w-section: calc(var(--w-measure) + 2.8rem);
+  --w-figure: 54rem;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -192,6 +194,7 @@ code {
 /* ---------- figures ---------- */
 
 .fig {
+  max-width: var(--w-figure);
   margin: 2.4rem auto 0;
   text-align: center;
 }
@@ -203,7 +206,6 @@ code {
 .fig-col { max-width: 30rem; }
 
 .fig figcaption {
-  max-width: var(--w-measure);
   margin: 0.9rem auto 0;
   font-size: 0.96rem;
   line-height: 1.68;
