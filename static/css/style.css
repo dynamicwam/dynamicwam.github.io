@@ -116,7 +116,7 @@ code {
   letter-spacing: -0.02em;
   color: var(--ink);
   text-wrap: balance;
-  max-width: 32ch;
+  max-width: 36ch;
   margin: 0 auto 1.4rem;
 }
 
@@ -124,11 +124,13 @@ code {
   font-family: var(--font-display);
   font-size: 1.18rem;
   color: var(--accent);
-  margin-bottom: 0.3rem;
+  max-width: 46rem;
+  margin: 0 auto 0.4rem;
 }
-.affiliation {
+.authors sup { font-size: 0.68em; }
+.author-note {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.92rem;
   color: var(--muted);
 }
 
