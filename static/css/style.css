@@ -99,11 +99,11 @@ code {
   text-align: center;
 }
 
-.hero-logo {
+.hero-banner {
   display: block;
-  width: 200px;
-  height: 200px;
-  margin: 0 auto 1.2rem;
+  width: min(620px, 90%);
+  height: auto;
+  margin: 0 auto 2rem;
 }
 
 .publication-title {
@@ -270,7 +270,6 @@ code {
   .topbar-links .topbar-gh { display: inline-flex; }
 
   .hero { padding-top: 2.6rem; }
-  .hero-logo { width: 150px; height: 150px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
