@@ -122,9 +122,9 @@ code {
 
 .authors {
   font-family: var(--font-display);
-  font-size: 1.18rem;
+  font-size: 1.38rem;
   color: var(--accent);
-  max-width: 46rem;
+  max-width: 54rem;
   margin: 0 auto 0.4rem;
 }
 .authors sup { font-size: 0.68em; }
