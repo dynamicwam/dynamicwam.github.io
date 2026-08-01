@@ -245,8 +245,9 @@ code {
   background: #000;
   object-fit: cover;
 }
-.pair-grid video { aspect-ratio: 16 / 9; }
-.portrait-grid video { aspect-ratio: 9 / 16; }
+/* Clips are re-encoded to exactly these aspects, with baked-in bars cropped off. */
+.pair-grid video { aspect-ratio: 4 / 3; }
+.portrait-grid video { aspect-ratio: 3 / 5; }
 
 .tile-label {
   font-family: var(--font-display);
