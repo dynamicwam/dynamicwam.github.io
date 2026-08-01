@@ -222,12 +222,22 @@ code {
 
 /* ---------- real-robot video grids ---------- */
 
-.pair-block { max-width: var(--w-figure); }
+/* Figures that break out wider than the prose; the negative inline margin
+   keeps them centered inside the narrower .content. .fig.fig-breakout
+   outranks the plain .fig max-width rule below. */
+.fig.fig-breakout {
+  max-width: none;
+  width: min(var(--breakout, 86rem), 96vw);
+  margin-inline: calc((100% - min(var(--breakout, 86rem), 96vw)) / 2);
+}
+.fig-breakout figcaption { max-width: var(--w-figure); }
+
+.rw-portrait { --breakout: 72rem; }
 
 .pair-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.4rem 1.2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.4rem 1.1rem;
 }
 .pair-col { display: flex; flex-direction: column; }
 
@@ -240,8 +250,7 @@ code {
   margin-bottom: 0.55rem;
 }
 
-.pair-grid video,
-.portrait-grid video {
+.pair-grid video {
   display: block;
   width: 100%;
   border-radius: 8px;
@@ -250,7 +259,7 @@ code {
 }
 /* Clips are re-encoded to exactly these aspects, with baked-in bars cropped off. */
 .pair-grid video { aspect-ratio: 4 / 3; }
-.portrait-grid video { aspect-ratio: 3 / 5; }
+.rw-portrait .pair-grid video { aspect-ratio: 3 / 5; }
 
 .tile-label {
   font-family: var(--font-display);
@@ -260,27 +269,9 @@ code {
   margin: 0.35rem 0 0.8rem;
 }
 .tile-label.tile-ours { color: var(--accent); }
-.pair-col .tile-label:last-child,
-.portrait-col .tile-label:last-child { margin-bottom: 0; }
+.pair-col .tile-label:last-child { margin-bottom: 0; }
 
-.portrait-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-.portrait-col { display: flex; flex-direction: column; }
-
-/* 9 clips in a plain 3x3 grid; the block breaks out wider than the prose.
-   .fig.sim-block outranks the later .fig max-width rule, and the negative
-   inline margin keeps the breakout centered inside the narrower .content. */
-.fig.sim-block {
-  max-width: none;
-  width: min(86rem, 96vw);
-  margin-inline: calc((100% - min(86rem, 96vw)) / 2);
-}
-/* Keep the caption at reading width even though the grid breaks out. */
-.sim-block figcaption { max-width: var(--w-figure); }
-
+/* 9 sim clips in a plain 3x3 grid. */
 .sim-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -377,8 +368,7 @@ code {
 
   .hero { padding-top: 2.6rem; }
 
-  .pair-grid { grid-template-columns: 1fr; }
-  .portrait-grid { grid-template-columns: 1fr 1fr; }
+  .pair-grid { grid-template-columns: 1fr 1fr; }
   .sim-grid { grid-template-columns: 1fr 1fr; }
 }
 

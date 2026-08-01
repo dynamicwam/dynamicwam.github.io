@@ -1,4 +1,10 @@
-// Real-robot clips: play while visible, pause off-screen; no autoplay under reduced motion.
+// Simulation renders are slow in real time; play them back at 2.5x.
+document.querySelectorAll('.sim-grid video').forEach(v => {
+  v.defaultPlaybackRate = 2.5;
+  v.playbackRate = 2.5;
+});
+
+// Video clips: play while visible, pause off-screen; no autoplay under reduced motion.
 const clips = document.querySelectorAll('.rw-video');
 if (clips.length) {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
