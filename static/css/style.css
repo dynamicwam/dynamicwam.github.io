@@ -203,6 +203,20 @@ code {
 }
 .content p + p { margin-top: 1.1rem; }
 
+/* ---------- demo video ---------- */
+
+.video-section { padding-top: 2.6rem; }
+
+.demo-video {
+  display: block;
+  width: 100%;
+  max-width: var(--w-figure);
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  border-radius: 8px;
+  background: #000;
+}
+
 /* ---------- figures ---------- */
 
 .fig {
