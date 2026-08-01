@@ -267,6 +267,20 @@ code {
 }
 .portrait-col { display: flex; flex-direction: column; }
 
+.sim-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+.sim-grid video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #fff;
+}
+
 /* ---------- figures ---------- */
 
 .fig {
@@ -351,6 +365,7 @@ code {
 
   .pair-grid { grid-template-columns: 1fr; }
   .portrait-grid { grid-template-columns: 1fr 1fr; }
+  .sim-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
