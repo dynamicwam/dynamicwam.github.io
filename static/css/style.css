@@ -207,12 +207,15 @@ code {
 
 .video-section { padding-top: 2.6rem; }
 
+/* Wider than the prose column; the negative inline margin keeps the
+   breakout centered instead of overflowing to the right. */
 .demo-video {
   display: block;
-  width: 100%;
-  max-width: var(--w-figure);
+  width: min(80rem, 94vw);
+  max-width: none;
   aspect-ratio: 16 / 9;
   margin: 0 auto;
+  margin-inline: calc((100% - min(80rem, 94vw)) / 2);
   border-radius: 8px;
   background: #000;
 }
@@ -267,10 +270,21 @@ code {
 }
 .portrait-col { display: flex; flex-direction: column; }
 
+/* 25 clips in a plain 5x5 grid; the block breaks out wider than the prose.
+   .fig.sim-block outranks the later .fig max-width rule, and the negative
+   inline margin keeps the breakout centered inside the narrower .content. */
+.fig.sim-block {
+  max-width: none;
+  width: min(86rem, 96vw);
+  margin-inline: calc((100% - min(86rem, 96vw)) / 2);
+}
+/* Keep the caption at reading width even though the grid breaks out. */
+.sim-block figcaption { max-width: var(--w-figure); }
+
 .sim-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 .sim-grid video {
   display: block;
@@ -365,7 +379,7 @@ code {
 
   .pair-grid { grid-template-columns: 1fr; }
   .portrait-grid { grid-template-columns: 1fr 1fr; }
-  .sim-grid { grid-template-columns: repeat(3, 1fr); }
+  .sim-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
