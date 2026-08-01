@@ -270,7 +270,7 @@ code {
 }
 .portrait-col { display: flex; flex-direction: column; }
 
-/* 25 clips in a plain 5x5 grid; the block breaks out wider than the prose.
+/* 9 clips in a plain 3x3 grid; the block breaks out wider than the prose.
    .fig.sim-block outranks the later .fig max-width rule, and the negative
    inline margin keeps the breakout centered inside the narrower .content. */
 .fig.sim-block {
@@ -283,8 +283,8 @@ code {
 
 .sim-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.6rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
 }
 .sim-grid video {
   display: block;
