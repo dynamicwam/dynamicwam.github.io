@@ -206,11 +206,34 @@
     evaluated for 20 trials per task.
   </p>
 
-  <figure class="fig fig-narrow">
-    <img src="assets/figures/setting.png" alt="Real-world evaluation setup across three motion levels and two gripper configurations.">
+  <figure class="fig pair-block">
+    <div class="pair-grid">
+      <div class="pair-col">
+        <span class="pair-task">Circular · ball</span>
+        <video class="rw-video" src="assets/videos/real/pi05_ball_fail.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label">✗ π<sub>0.5</sub> — fail</span>
+        <video class="rw-video" src="assets/videos/real/dwam_ball_success.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label tile-ours">✓ DynamicWAM — success</span>
+      </div>
+      <div class="pair-col">
+        <span class="pair-task">Circular · plush toy</span>
+        <video class="rw-video" src="assets/videos/real/pi05_plush_fail.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label">✗ π<sub>0.5</sub> — fail</span>
+        <video class="rw-video" src="assets/videos/real/dwam_plush_success.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label tile-ours">✓ DynamicWAM — success</span>
+      </div>
+      <div class="pair-col">
+        <span class="pair-task">Circular · cube</span>
+        <video class="rw-video" src="assets/videos/real/pi05_cube_fail.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label">✗ π<sub>0.5</sub> — fail</span>
+        <video class="rw-video" src="assets/videos/real/dwam_cube_success.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label tile-ours">✓ DynamicWAM — success</span>
+      </div>
+    </div>
     <figcaption>
-      <b>Real-world evaluation setup.</b> Twelve tasks span three levels of target-motion
-      complexity and two Franka Research 3 gripper configurations.
+      <b>Baseline failures vs. DynamicWAM.</b> Representative paired trials on the turntable
+      (circular-motion) tasks: π<sub>0.5</sub> loses the moving target, while DynamicWAM times the
+      grasp and completes each task.
     </figcaption>
   </figure>
 
@@ -223,12 +246,28 @@
     combining both paths reaches 46.67%.
   </p>
 
-  <figure class="fig">
-    <img src="assets/figures/realworld.png" alt="Representative real-world task executions across the three motion levels.">
+  <figure class="fig pair-block">
+    <div class="portrait-grid">
+      <div class="portrait-col">
+        <video class="rw-video" src="assets/videos/real/dwam_linear_car.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label tile-ours">Linear · toy car</span>
+      </div>
+      <div class="portrait-col">
+        <video class="rw-video" src="assets/videos/real/dwam_linear_cube.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label tile-ours">Linear · cube</span>
+      </div>
+      <div class="portrait-col">
+        <video class="rw-video" src="assets/videos/real/dwam_linear_mouse.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label tile-ours">Linear · mouse toy</span>
+      </div>
+      <div class="portrait-col">
+        <video class="rw-video" src="assets/videos/real/dwam_linear_tennis.mp4" muted loop playsinline preload="metadata"></video>
+        <span class="tile-label tile-ours">Linear · tennis ball</span>
+      </div>
+    </div>
     <figcaption>
-      <b>Representative real-world tasks.</b> From top to bottom, the targets undergo linear,
-      circular, and compound motion (Levels 1–3). Columns show execution from the initial
-      observation at T to the completed grasp at T+N.
+      <b>DynamicWAM on linear-motion tasks.</b> Grasping a remote-controlled car, a cube on a
+      conveyor, a self-propelled mouse toy, and a tennis ball rolling down an inclined rail.
     </figcaption>
   </figure>
 

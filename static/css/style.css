@@ -217,6 +217,55 @@ code {
   background: #000;
 }
 
+/* ---------- real-robot video grids ---------- */
+
+.pair-block { max-width: var(--w-figure); }
+
+.pair-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4rem 1.2rem;
+}
+.pair-col { display: flex; flex-direction: column; }
+
+.pair-task {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 0.55rem;
+}
+
+.pair-grid video,
+.portrait-grid video {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  background: #000;
+  object-fit: cover;
+}
+.pair-grid video { aspect-ratio: 16 / 9; }
+.portrait-grid video { aspect-ratio: 9 / 16; }
+
+.tile-label {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  margin: 0.35rem 0 0.8rem;
+}
+.tile-label.tile-ours { color: var(--accent); }
+.pair-col .tile-label:last-child,
+.portrait-col .tile-label:last-child { margin-bottom: 0; }
+
+.portrait-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.portrait-col { display: flex; flex-direction: column; }
+
 /* ---------- figures ---------- */
 
 .fig {
@@ -298,6 +347,9 @@ code {
   .topbar-links .topbar-gh { display: inline-flex; }
 
   .hero { padding-top: 2.6rem; }
+
+  .pair-grid { grid-template-columns: 1fr; }
+  .portrait-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
