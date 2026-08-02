@@ -1,3 +1,14 @@
+// Demo video: try autoplaying with sound on; browsers that block unmuted
+// autoplay fall back to muted playback (the viewer can unmute via controls).
+const demo = document.querySelector('.demo-video');
+if (demo && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  demo.muted = false;
+  demo.play().catch(() => {
+    demo.muted = true;
+    demo.play().catch(() => {});
+  });
+}
+
 // Simulation renders are slow in real time; play them back at 2.5x.
 document.querySelectorAll('.sim-grid video').forEach(v => {
   v.defaultPlaybackRate = 2.5;
