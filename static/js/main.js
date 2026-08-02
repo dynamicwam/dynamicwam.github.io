@@ -1,11 +1,24 @@
-// Demo video: try autoplaying with sound on; browsers that block unmuted
-// autoplay fall back to muted playback (the viewer can unmute via controls).
+// Demo video: try autoplaying with sound on. Browsers that block unmuted
+// autoplay fall back to muted playback, then unmute on the viewer's first
+// gesture anywhere on the page — allowed only inside a real user gesture,
+// and only while the demo is on screen so audio never starts unseen.
 const demo = document.querySelector('.demo-video');
 if (demo && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   demo.muted = false;
   demo.play().catch(() => {
     demo.muted = true;
     demo.play().catch(() => {});
+    const unmute = e => {
+      if (demo.contains(e.target)) return; // let the player's own controls win
+      const r = demo.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight && demo.muted && !demo.paused) {
+        demo.muted = false;
+      }
+      if (!demo.muted) {
+        ['pointerdown', 'keydown'].forEach(t => window.removeEventListener(t, unmute, true));
+      }
+    };
+    ['pointerdown', 'keydown'].forEach(t => window.addEventListener(t, unmute, true));
   });
 }
 
